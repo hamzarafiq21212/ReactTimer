@@ -26,23 +26,3 @@ const setBgAction = (payload) => {
 //         },
 //     };
 // };
-
-
-
-// import { OPEN_SNACKBAR, CLOSE_SNACKBAR } from '../actionTypes/app';
-
-// export const openSnackbar = ({message = '', timeout = 2500 }) => {
-//    return {
-//        type: OPEN_SNACKBAR,
-//        payload: {
-//            message,
-//            timeout,
-//        },
-//    };
-// };
-
-// export const closeSnackbar = () => {
-//     return {
-//         type: CLOSE_SNACKBAR,
-//     };
-// };
