@@ -1,11 +1,12 @@
-import React from "react";
 import Modal from 'react-modal'
+import React from "react";
 import "./styles.css";
-import { connect } from 'react-redux';
-// import { setBgAction, setColorAction } from './redux/actions/setBgAction';
-import setBgAction from "./redux/actions/setBgAction";
-// import setColorAction from "./redux/actions/setColorAction";
 
+import { connect } from 'react-redux';
+import configureStore from './redux/store';
+import { addValue} from "./redux/actions/index";
+
+const store = configureStore;
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -18,10 +19,8 @@ class App extends React.Component {
       play: false,
       pause: true,
 
-      // value: 25, seconds: '00',
-      // value2: 5, seconds2: '00',
-         value3: 10,
-         seconds3: '00', url: '',
+      value2: 5,  seconds2: '00', seconds: '00',
+      value3: 10, seconds3: '00', url: '',
          isClicked : false,
     }
     this.baseState = this.state;
@@ -44,7 +43,7 @@ class App extends React.Component {
     var sec = this.secondsRemaining - (min * 60);
 
     this.setState({
-      value: min,
+    value: min,
       seconds: sec
     })
     if (sec < 10) {
@@ -90,7 +89,6 @@ class App extends React.Component {
     this.secondsRemaining2--
   }
 
-
   tick3() {
     var min3 = Math.floor(this.secondsRemaining3 / 60);
     var sec3 = this.secondsRemaining3 - (min3 * 60);
@@ -113,7 +111,6 @@ class App extends React.Component {
       this.play();
       clearInterval(this.intervalHandle3);
     }
-
     this.secondsRemaining3--
   }
 
@@ -208,12 +205,20 @@ class App extends React.Component {
     this.audio = new Audio(event.target.value);
   }
 
-    handleChange(event) {
-      this.setState({
-        value: event.target.value,
-      })
-      this.baseState.value=event.target.value;
-    }
+  handleChange(e)  {
+    const { address } = this.props;
+    address (e.target.value)
+    //this.baseState.value = this.props.placeName;
+
+    // this.baseState.value=this.props.placeName;
+  }
+
+    // handleChange(event) {
+    //   this.setState({
+    //     value: event.target.value,
+    //   })
+    //   this.baseState.value=event.target.value;
+    // }
 
     handleChange2(event) {
       this.setState({
@@ -262,10 +267,12 @@ class App extends React.Component {
           document.removeEventListener("keydown", this.onKeyPressed.bind(this));
          }
 
+         Single = props => {
+          const address = props.address; }
 
-  render() {
+
+  render() {    
       return (
-
       <div className='timer'>
       <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tomato Timer <navbar>
       <buttons class="button"> <a href ="https://bit.ly/sharetomatotimer">Tweet about us!</a></buttons>
@@ -404,7 +411,7 @@ class App extends React.Component {
              <div class="row">
                <div class="pomoinput">
               <label for="time_pomodoro">Pomodoro</label>
-              <input type="number" value = {this.state.value} onChange={this.handleChange} required />
+              <input type="number" value = {this.state.value} onChange={this.props.address} required />
                </div>
              <div class="shortinput">
               <label for="time_shortbreak">Short Break</label>
@@ -414,9 +421,11 @@ class App extends React.Component {
               <label for="time_longbreak">Long Break</label>
               <input type="number" value = {this.state.value3} onChange={this.handleChange3} required />
               </div>
-              <button class="button" onClick={this.handlesChange}>Save</button>
+              {/* <button class="button" onClick={this.handlesChange}>Save</button> */}
+              <button class="button" onClick= {() => this.props.address(this.props.value)}>Save</button>
               <button class="button" onclick={this.Reset}>Reset</button>
               <button class="button" onclick={this.play}>Sound Test</button>
+              <input>{ this.state.value }</input>
               </div>
               </div> </div>
             </Modal>
@@ -424,8 +433,9 @@ class App extends React.Component {
           </div>
 
         <div className="row">
-               <Timer setBgAction = {setBgAction} value2 = {setBgAction} value3={this.state.value3}
+               <Timer address = {this.props.address} value2 = {this.state.value2} value3={this.state.value3}
                 seconds = {this.state.seconds} seconds2 = {this.state.seconds2} seconds3 = {this.state.seconds3}/>
+        {/* <ResultLine address = {this.props.address}/> */}
         </div>
 
            <div>
@@ -435,7 +445,7 @@ class App extends React.Component {
           </div>
 
 
-<div class="panel">
+<div class="panel">                       
 <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Keyboard Shortcuts</h4>
 <div class="disc1">
 <li><strong>SPACE</strong>&nbsp;&nbsp;&nbsp; Start or Stop the timer</li>
@@ -546,7 +556,7 @@ class Timer extends React.Component {
       </div>
 
       <div>
-      {this.state.showButton ? <h2>{this.props.setBgAction}:{this.props.seconds}</h2> : null}
+      {this.state.showButton ? <h2>{this.props.address}:{this.props.seconds}</h2> : null}
       {this.state.showButton2 ? <h2>{this.props.value2}:{this.props.seconds2}</h2> : null}
       {this.state.showButton3 ? <h2>{this.props.value3}:{this.props.seconds3}</h2> : null}
       </div>
@@ -556,15 +566,25 @@ class Timer extends React.Component {
   }
 }
  
-const mapStateToProps = state => ({
-    ...state
-  });
+  function mapStateToProps(state) {
+    console.log("The state is:"+state.value);
+    return {
+        address: state.value
+    }
+  }
+  function mapDispatchToProps(dispatch) {  
+    return {
+        onPomoClick: addValue
+    }
+  } 
   
-  const mapDispatchToProps = dispatch => ({
-    setBgAction: (payload) => dispatch(setBgAction(payload)),
-    // setColorAction: (payload) => dispatch(setColorAction(payload))
-  });
-  
+  // function mapDispatchToProps(dispatch) {  
+  //   return {
+  //       address: (value) => dispatch({ 
+  //         type: 'UPDATE_ADDRESS',
+  //         pomoValue: value.address })
+  //   }
+  // } 
   export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 
@@ -578,8 +598,3 @@ const mapStateToProps = state => ({
 //     dispatch(shortBreak(value2, seconds2));
 // }
 // });
-
-// export default connect(
-//     mapStateToProps,
-//     mapDispatchToProps,
-// )(App);

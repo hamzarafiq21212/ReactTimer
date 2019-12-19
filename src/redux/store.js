@@ -1,16 +1,12 @@
-import { createStore } from "redux";
-import  rootReducer  from "./reducers/rootReducer";
+import { createStore, combineReducers } from 'redux';
+import addressReducer from './reducers/index';
 
-function configureStore(state = { bgColor: 25 }) {
-  return createStore(rootReducer,state);
+const rootReducer = combineReducers({
+  value: addressReducer
+});
+
+const configureStore = () => {
+  return createStore(rootReducer);
 }
-export default configureStore;
 
-// import { createStore, combineReducers } from 'redux';
-// import { appReducer } from './reducers/app';
-
-// const reducers = combineReducers({
-//     app: appReducer,
-// });
-
-// export const store = createStore(reducers);
+export default configureStore(addressReducer);

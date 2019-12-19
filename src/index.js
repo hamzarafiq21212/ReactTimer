@@ -1,27 +1,17 @@
-import React from "react";
 import ReactDOM from "react-dom";
-import "./styles.css";
+import React from "react";
 import App from "./App";
-import { Provider } from 'react-redux';
+import "./styles.css";
+
+import {Provider} from 'react-redux';
 import configureStore from './redux/store';
+
+// import  addressReducer  from './redux/reducers';
 // import { store } from './redux/store';
+// const store = store(addressReducer);
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(
-  <Provider store={configureStore()}>
+  <Provider store={configureStore}>
     <App />  
   </Provider>, rootElement);
-
-//   document.getElementById("root")
-// );
-
-
-// const rootElement = document.getElementById("root");
-// ReactDOM.render(<Provider store = {store}>
-// <App />
-// </Provider>, rootElement);
-
-
-  // {App.map((prop, key) => {
-  //         return <Route path={prop.path} key={key} component={prop.component} />;
-  //       })}
